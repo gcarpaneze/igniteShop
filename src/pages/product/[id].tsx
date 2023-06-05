@@ -1,7 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
+import Head from 'next/head'
 import Image from 'next/image'
 import Stripe from 'stripe'
-import axios from 'axios'
+// import axios from 'axios'
 
 import { stripe } from '../../lib/stripe'
 
@@ -10,8 +11,8 @@ import {
   ImageContainer,
   ProductContainer,
 } from '../../styles/pages/product'
-import { useState } from 'react'
-import Head from 'next/head'
+
+import { converter } from '../../utils/converter'
 
 interface ProductProps {
   product: {
@@ -19,29 +20,29 @@ interface ProductProps {
     name: string
     imgURL: string
     description: string
-    price: string
+    price: number
     defaultPriceId: string
   }
 }
 
 export default function Product({ product }: ProductProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  function handleSetCartProduct() {
+    const response = localStorage.getItem('@ignite-shop-cart-v.1')
+    const productsInCart = response ? JSON.parse(response) : []
 
-  async function handleBuyProduct() {
-    try {
-      setIsLoading(true)
-      const response = await axios.post('/api/checkout', {
-        priceId: product.defaultPriceId,
-      })
+    const hasAdded = productsInCart.filter(
+      (cartProduct) => cartProduct.id === product.id,
+    )
 
-      const { checkoutURL } = response.data
-
-      window.location.href = checkoutURL
-    } catch (error) {
-      setIsLoading(false)
-      alert('Falha ao redirecionar para o checkout!')
+    if (hasAdded.length === 0) {
+      productsInCart.push(product)
+      localStorage.setItem(
+        '@ignite-shop-cart-v.1',
+        JSON.stringify(productsInCart),
+      )
     }
   }
+
   return (
     <>
       <Head>
@@ -55,12 +56,12 @@ export default function Product({ product }: ProductProps) {
 
         <DetailsContainer>
           <h1>{product.name}</h1>
-          <span>{product.price}</span>
+          <span>{converter(product.price)}</span>
 
           <p>{product.description}</p>
 
-          <button onClick={handleBuyProduct} disabled={isLoading}>
-            Comprar agora
+          <button onClick={() => handleSetCartProduct()}>
+            Colocar na sacola
           </button>
         </DetailsContainer>
       </ProductContainer>
@@ -92,10 +93,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
         imgURL: product.images[0],
         description: product.description,
         defaultPriceId: price.id,
-        price: new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        }).format(price.unit_amount / 100),
+        price: price.unit_amount / 100,
       },
     },
     revalidate: 60 * 60 * 1, // 1 hour

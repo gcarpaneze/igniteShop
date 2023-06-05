@@ -6,13 +6,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const { priceId } = req.body
+  const { pricesIds } = req.body
 
   if (req.method !== 'POST') {
     return res.status(405)
   }
 
-  if (!priceId) {
+  if (pricesIds.length === 0) {
     return res.status(400).json({
       error: 'Product not found',
     })
@@ -25,12 +25,12 @@ export default async function handler(
     success_url: sucessURL,
     cancel_url: cancelURL,
     mode: 'payment',
-    line_items: [
-      {
-        price: priceId,
+    line_items: pricesIds.map((priceId) => {
+      return {
+        price: priceId.price,
         quantity: 1,
-      },
-    ],
+      }
+    }),
   })
 
   return res.status(201).json({

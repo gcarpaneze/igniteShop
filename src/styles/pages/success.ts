@@ -7,22 +7,28 @@ export const SuccessContainer = styled('main', {
   alignItems: 'center',
   margin: '0 auto',
   height: 656,
+  paddingTop: '4rem',
+
+  div: {
+    display: 'flex',
+    marginBottom: '3rem',
+  },
 
   h1: {
     fontSize: '$2xl',
     color: '$gray100',
+    marginBottom: '1.5rem',
   },
 
   p: {
-    marginTop: '2rem',
     fontSize: '$xl',
     color: '$gray300',
     maxWidth: 560,
     textAlign: 'center',
+    marginBottom: '4rem',
   },
 
   a: {
-    marginTop: '5rem',
     display: 'block',
     fontSize: '$lg',
     color: '$green500',
@@ -37,12 +43,12 @@ export const SuccessContainer = styled('main', {
 })
 
 export const ImageContainer = styled('div', {
-  marginTop: '4rem',
+  marginLeft: '-2.62rem',
   width: '100%',
   maxWidth: 130,
-  height: 145,
+  height: 130,
   background: 'linear-gradient(180deg, #1ea483 0%, #7465d4 100% )',
-  borderRadius: 8,
+  borderRadius: 99,
   padding: '0.25rem',
 
   display: 'flex',

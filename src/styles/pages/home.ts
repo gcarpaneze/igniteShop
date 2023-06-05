@@ -43,14 +43,29 @@ export const Product = styled('div', {
 
     background: 'rgba(0, 0, 0, 0.6)',
 
-    strong: {
+    p: {
       fontSize: '$lg',
+      marginBottom: '0.25rem',
     },
 
-    span: {
+    strong: {
       fontSize: '$xl',
       fontWeight: 'bold',
       color: '$green300',
+    },
+
+    svg: {
+      background: '$green500',
+      padding: '0.75rem',
+      borderRadius: 8,
+      color: '$white',
+      width: '3.5rem',
+      height: '3.5rem',
+      fontSize: '$lg',
+
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   },
 

@@ -16,6 +16,10 @@ export const ModalHeader = styled('header', {
   display: 'flex',
   justifyContent: 'flex-end',
   padding: '1.5rem',
+
+  svg: {
+    cursor: 'pointer',
+  },
 })
 
 export const ModalContent = styled('main', {
@@ -33,23 +37,25 @@ export const ModalContent = styled('main', {
   },
 })
 
-export const ItensSection = styled('main', {
+export const ItensSection = styled('section', {
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'flex-start',
-  flex: 1,
+  alignItems: 'flex-start',
 })
 
 export const Item = styled('div', {
   display: 'flex',
   gap: '1.25rem',
+  width: '100%',
+  overflow: 'hidden',
 
-  '> div': {
+  div: {
+    height: '6rem',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    height: 93,
   },
 
   p: {
@@ -69,6 +75,7 @@ export const Item = styled('div', {
     color: '$green500',
     fontWeight: 'bold',
     fontSize: '$md',
+    cursor: 'pointer',
   },
 })
 

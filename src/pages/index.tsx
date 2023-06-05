@@ -4,12 +4,14 @@ import Image from 'next/image'
 import Head from 'next/head'
 import { Stripe } from 'stripe'
 import { useKeenSlider } from 'keen-slider/react'
+import { Handbag } from '@phosphor-icons/react'
 
 import { stripe } from '../lib/stripe'
 
 import { HomeContainer, Product } from '../styles/pages/home'
 
 import 'keen-slider/keen-slider.min.css'
+import { converter } from '../utils/converter'
 
 interface HomeProps {
   products: {
@@ -18,9 +20,10 @@ interface HomeProps {
     imgURL: string
     price: number
   }[]
+  handleSetCartProducts: () => void
 }
 
-export default function Home({ products }: HomeProps) {
+export default function Home({ products, handleSetCartProducts }: HomeProps) {
   const [keenSliderRef] = useKeenSlider({
     slides: {
       perView: 3,
@@ -46,8 +49,12 @@ export default function Home({ products }: HomeProps) {
                 <Image src={product.imgURL} width={520} height={480} alt="" />
 
                 <footer>
-                  <strong>{product.name}</strong>
-                  <span>{product.price}</span>
+                  <div>
+                    <p>{product.name}</p>
+                    <strong>{converter(product.price)}</strong>
+                  </div>
+
+                  <Handbag />
                 </footer>
               </Product>
             </Link>
@@ -70,10 +77,7 @@ export const getStaticProps: GetStaticProps = async () => {
       id: product.id,
       name: product.name,
       imgURL: product.images[0],
-      price: new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-      }).format(price.unit_amount / 100),
+      price: price.unit_amount / 100,
     }
   })
 
