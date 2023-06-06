@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -11,6 +12,8 @@ import {
   ImageContainer,
   ProductContainer,
 } from '../../styles/pages/product'
+
+import { CartContext } from '../../contexts/CartContext'
 
 import { converter } from '../../utils/converter'
 
@@ -26,22 +29,7 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps) {
-  function handleSetCartProduct() {
-    const response = localStorage.getItem('@ignite-shop-cart-v.1')
-    const productsInCart = response ? JSON.parse(response) : []
-
-    const hasAdded = productsInCart.filter(
-      (cartProduct) => cartProduct.id === product.id,
-    )
-
-    if (hasAdded.length === 0) {
-      productsInCart.push(product)
-      localStorage.setItem(
-        '@ignite-shop-cart-v.1',
-        JSON.stringify(productsInCart),
-      )
-    }
-  }
+  const { addProductInCart } = useContext(CartContext)
 
   return (
     <>
@@ -60,7 +48,7 @@ export default function Product({ product }: ProductProps) {
 
           <p>{product.description}</p>
 
-          <button onClick={() => handleSetCartProduct()}>
+          <button onClick={() => addProductInCart(product)}>
             Colocar na sacola
           </button>
         </DetailsContainer>

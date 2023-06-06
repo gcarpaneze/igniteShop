@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useContext } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { useKeenSlider } from 'keen-slider/react'
 import { X } from '@phosphor-icons/react'
+
+import { CartContext } from '../../contexts/CartContext'
 
 import 'keen-slider/keen-slider.min.css'
 
@@ -18,15 +20,6 @@ import { converter } from '../../utils/converter'
 import Image from 'next/image'
 import axios from 'axios'
 
-interface ProductsDetails {
-  id: string
-  name: string
-  imgURL: string
-  description: string
-  price: number
-  defaultPriceId: string
-}
-
 export function Modal() {
   const [keenSliderRef] = useKeenSlider({
     vertical: true,
@@ -36,26 +29,12 @@ export function Modal() {
     },
   })
 
-  const [products, setProducts] = useState<ProductsDetails[]>([])
-  const [initialLoading, setinitialLoading] = useState(true)
-
-  useEffect(() => {
-    const response = localStorage.getItem('@ignite-shop-cart-v.1')
-    const data = response ? JSON.parse(response) : []
-    setProducts(data)
-    setinitialLoading(false)
-  }, [])
-
-  function handleRemoveProduct(id: string) {
-    const data = products.filter((product) => product.id !== id)
-    setProducts(data)
-    localStorage.setItem('@ignite-shop-cart-v.1', JSON.stringify(data))
-  }
+  const { cartProducts, removeProduct } = useContext(CartContext)
 
   async function handleBuyProduct() {
-    if (products.length === 0) return
+    if (cartProducts.length === 0) return
 
-    const pricesIds = products.map((product) => {
+    const pricesIds = cartProducts.map((product) => {
       return { price: product.defaultPriceId }
     })
 
@@ -72,11 +51,7 @@ export function Modal() {
     }
   }
 
-  const totalAmount = products.reduce((acc, cur) => acc + cur.price, 0)
-
-  if (initialLoading) {
-    return <></>
-  }
+  const totalAmount = cartProducts.reduce((acc, cur) => acc + cur.price, 0)
 
   return (
     <ModalContainer>
@@ -94,7 +69,7 @@ export function Modal() {
           className="keen-slider"
           style={{ flexWrap: 'nowrap', height: '60%' }}
         >
-          {products.map((product) => {
+          {cartProducts.map((product) => {
             return (
               <Item key={product.id} className="keen-slider__slide">
                 <ImageContainer>
@@ -105,7 +80,7 @@ export function Modal() {
                   <p>{product.name}</p>
                   <strong>{converter(product.price)}</strong>
 
-                  <button onClick={() => handleRemoveProduct(product.id)}>
+                  <button onClick={() => removeProduct(product.id)}>
                     Remover
                   </button>
                 </div>
@@ -117,7 +92,7 @@ export function Modal() {
         <ResumeSection>
           <div>
             <span>Quantidade</span>
-            <span>{products.length} itens</span>
+            <span>{cartProducts.length} itens</span>
           </div>
 
           <div>
